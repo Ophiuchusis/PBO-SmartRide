@@ -67,7 +67,6 @@ class TiketPelajar extends Tiket {
 
 public class SmartRideApp {
     public static void main(String[] args) {
-        // Kriteria 1: Input Scanner
         Scanner scanner = new Scanner(System.in);
         Tiket[] daftarPesanan = new Tiket[10]; 
         int jumlahPesanan = 0;
