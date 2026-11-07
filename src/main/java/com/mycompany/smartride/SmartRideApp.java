@@ -2,9 +2,7 @@ package com.mycompany.smartride;
 
 import java.util.Scanner;
 
-// Kriteria 2 & 3: Class, Object, dan Encapsulation
-class Tiket {
-    // Encapsulation: Atribut disembunyikan dengan modifier private
+=class Tiket {
     private String namaPenumpang;
     private int jarakKm;
     private double tarifPerKm = 5000.0; // Tarif dasar Rp 5.000 per km
@@ -26,7 +24,6 @@ class Tiket {
         return jarakKm;
     }
 
-    // Encapsulation: Setter dengan validasi Control Flow (if-else)
     public void setJarakKm(int jarakKm) {
         if (jarakKm <= 0) {
             System.out.println("Jarak tidak valid! Otomatis diubah menjadi 1 km.");
@@ -47,12 +44,11 @@ class Tiket {
     }
 }
 
-// Kriteria 4: Inheritance (Pewarisan)
 class TiketPelajar extends Tiket {
     private double diskon = 0.5; // Diskon 50% untuk pelajar
 
     public TiketPelajar(String namaPenumpang, int jarakKm) {
-        super(namaPenumpang, jarakKm); // Memanggil konstruktor Superclass
+        super(namaPenumpang, jarakKm); 
     }
 
     // Method Overriding untuk memodifikasi cara hitung tarif
@@ -65,7 +61,7 @@ class TiketPelajar extends Tiket {
     @Override
     public void tampilkanTiket() {
         System.out.println("[TIKET PELAJAR - DISKON 50%]");
-        super.tampilkanTiket(); // Memanggil method tampilkanTiket milik induk
+        super.tampilkanTiket(); 
     }
 }
 
@@ -73,13 +69,12 @@ public class SmartRideApp {
     public static void main(String[] args) {
         // Kriteria 1: Input Scanner
         Scanner scanner = new Scanner(System.in);
-        Tiket[] daftarPesanan = new Tiket[10]; // Array untuk menyimpan objek
+        Tiket[] daftarPesanan = new Tiket[10]; 
         int jumlahPesanan = 0;
         boolean isRunning = true;
 
         System.out.println("=== SISTEM TIKET SMART RIDE ===");
 
-        // Kriteria 1: Control Flow (While loop & Switch-case)
         while (isRunning) {
             System.out.println("\nMenu Utama:");
             System.out.println("1. Pesan Tiket");
@@ -106,7 +101,6 @@ public class SmartRideApp {
                         int jenis = scanner.nextInt();
                         scanner.nextLine();
 
-                        // Kriteria 2: Instansiasi Object (Polymorphism)
                         if (jenis == 2) {
                             daftarPesanan[jumlahPesanan] = new TiketPelajar(nama, jarak);
                         } else {
@@ -124,7 +118,6 @@ public class SmartRideApp {
                     if (jumlahPesanan == 0) {
                         System.out.println("Belum ada tiket yang dipesan.");
                     } else {
-                        // Kriteria 1: Control Flow (For loop)
                         for (int i = 0; i < jumlahPesanan; i++) {
                             System.out.println("Pesanan ke-" + (i + 1));
                             daftarPesanan[i].tampilkanTiket();
