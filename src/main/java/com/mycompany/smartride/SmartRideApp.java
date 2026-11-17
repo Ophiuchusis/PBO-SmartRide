@@ -1,146 +1,149 @@
 package com.mycompany.smartride;
 
-import java.util.Scanner;
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-// Kriteria 2 & 3: Class, Object, dan Encapsulation
 class Tiket {
-    // Encapsulation: Atribut disembunyikan dengan modifier private
     private String namaPenumpang;
     private int jarakKm;
-    private double tarifPerKm = 5000.0; // Tarif dasar Rp 5.000 per km
+    private double tarifPerKm = 5000.0;
 
     public Tiket(String namaPenumpang, int jarakKm) {
         this.namaPenumpang = namaPenumpang;
-        setJarakKm(jarakKm);
-    }
-
-    public String getNamaPenumpang() {
-        return namaPenumpang;
-    }
-
-    public void setNamaPenumpang(String namaPenumpang) {
-        this.namaPenumpang = namaPenumpang;
-    }
-
-    public int getJarakKm() {
-        return jarakKm;
-    }
-
-    // Encapsulation: Setter dengan validasi Control Flow (if-else)
-    public void setJarakKm(int jarakKm) {
-        if (jarakKm <= 0) {
-            System.out.println("Jarak tidak valid! Otomatis diubah menjadi 1 km.");
-            this.jarakKm = 1;
-        } else {
-            this.jarakKm = jarakKm;
-        }
+        this.jarakKm = jarakKm;
     }
 
     public double hitungTarif() {
         return jarakKm * tarifPerKm;
     }
 
-    public void tampilkanTiket() {
-        System.out.println("Nama   : " + namaPenumpang);
-        System.out.println("Jarak  : " + jarakKm + " km");
-        System.out.println("Tarif  : Rp " + hitungTarif());
+    public String getInfo() {
+        return namaPenumpang + " | " + jarakKm + " km | Rp " + String.format("%,.0f", hitungTarif());
     }
 }
 
-// Kriteria 4: Inheritance (Pewarisan)
 class TiketPelajar extends Tiket {
-    private double diskon = 0.5; // Diskon 50% untuk pelajar
+    private double diskon = 0.5;
 
     public TiketPelajar(String namaPenumpang, int jarakKm) {
-        super(namaPenumpang, jarakKm); // Memanggil konstruktor Superclass
+        super(namaPenumpang, jarakKm);
     }
 
-    // Method Overriding untuk memodifikasi cara hitung tarif
     @Override
     public double hitungTarif() {
-        double tarifAwal = super.hitungTarif();
-        return tarifAwal - (tarifAwal * diskon);
+        return super.hitungTarif() - (super.hitungTarif() * diskon);
     }
 
     @Override
-    public void tampilkanTiket() {
-        System.out.println("[TIKET PELAJAR - DISKON 50%]");
-        super.tampilkanTiket(); // Memanggil method tampilkanTiket milik induk
+    public String getInfo() {
+        return "[PELAJAR] " + super.getInfo();
     }
 }
 
-public class SmartRideApp {
-    public static void main(String[] args) {
-        // Kriteria 1: Input Scanner
-        Scanner scanner = new Scanner(System.in);
-        Tiket[] daftarPesanan = new Tiket[10]; // Array untuk menyimpan objek
-        int jumlahPesanan = 0;
-        boolean isRunning = true;
+public class SmartRideApp extends Application {
 
-        System.out.println("=== SISTEM TIKET SMART RIDE ===");
+    @Override
+    public void start(Stage stage) {
 
-        // Kriteria 1: Control Flow (While loop & Switch-case)
-        while (isRunning) {
-            System.out.println("\nMenu Utama:");
-            System.out.println("1. Pesan Tiket");
-            System.out.println("2. Lihat Daftar Pesanan");
-            System.out.println("3. Keluar");
-            System.out.print("Pilih menu (1-3): ");
-            
-            int pilihan = scanner.nextInt();
-            scanner.nextLine(); 
+        Label lblJudul = new Label("🚌 SMART RIDE");
+        lblJudul.setMaxWidth(Double.MAX_VALUE);
+        lblJudul.setStyle("-fx-background-color: #3f3f3f; -fx-text-fill: white;"
+                + "-fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 15 20;");
 
-            switch (pilihan) {
-                case 1:
-                    if (jumlahPesanan < daftarPesanan.length) {
-                        System.out.print("Masukkan Nama Penumpang: ");
-                        String nama = scanner.nextLine();
-                        
-                        System.out.print("Masukkan Jarak Tempuh (km): ");
-                        int jarak = scanner.nextInt();
-                        
-                        System.out.println("Pilih Kategori Penumpang:");
-                        System.out.println("1. Reguler");
-                        System.out.println("2. Pelajar");
-                        System.out.print("Pilihan (1/2): ");
-                        int jenis = scanner.nextInt();
-                        scanner.nextLine();
 
-                        // Kriteria 2: Instansiasi Object (Polymorphism)
-                        if (jenis == 2) {
-                            daftarPesanan[jumlahPesanan] = new TiketPelajar(nama, jarak);
-                        } else {
-                            daftarPesanan[jumlahPesanan] = new Tiket(nama, jarak);
-                        }
-                        
-                        jumlahPesanan++;
-                        System.out.println("Sukses! Tiket berhasil dipesan.");
-                    } else {
-                        System.out.println("Maaf, kapasitas pesanan penuh!");
-                    }
-                    break;
-                case 2:
-                    System.out.println("\n--- DAFTAR PESANAN TIKET ---");
-                    if (jumlahPesanan == 0) {
-                        System.out.println("Belum ada tiket yang dipesan.");
-                    } else {
-                        // Kriteria 1: Control Flow (For loop)
-                        for (int i = 0; i < jumlahPesanan; i++) {
-                            System.out.println("Pesanan ke-" + (i + 1));
-                            daftarPesanan[i].tampilkanTiket();
-                            System.out.println("----------------------------");
-                        }
-                    }
-                    break;
-                case 3:
-                    isRunning = false;
-                    System.out.println("Terima kasih telah menggunakan SmartRide!");
-                    break;
-                default:
-                    System.out.println("Pilihan tidak valid, silakan coba lagi.");
-                    break;
+        TextField tfNama = new TextField();
+        tfNama.setPromptText("Contoh: Budi");
+        TextField tfJarak = new TextField();
+        tfJarak.setPromptText("Contoh: 10");
+        CheckBox cbPelajar = new CheckBox("Penumpang Pelajar (diskon 50%)");
+
+        Button btnPesan = new Button("Pesan Tiket");
+        btnPesan.setMaxWidth(Double.MAX_VALUE);
+        btnPesan.setStyle("-fx-background-color: #437a5b; -fx-text-fill: white;"
+                + "-fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 20; -fx-cursor: hand;");
+
+        ListView<String> listPesanan = new ListView<>();
+
+        GridPane form = new GridPane();
+        form.setHgap(10);
+        form.setVgap(10);
+        form.add(new Label("Nama Penumpang:"), 0, 0);
+        form.add(tfNama, 1, 0);
+        form.add(new Label("Jarak (km):"), 0, 1);
+        form.add(tfJarak, 1, 1);
+
+        VBox isi = new VBox(12, form, cbPelajar, btnPesan,
+                new Label("Daftar Pesanan:"), listPesanan);
+        isi.setPadding(new Insets(20));
+
+        VBox root = new VBox(lblJudul, isi);
+        root.setStyle("-fx-background-color: #f1f5f9;");
+
+        btnPesan.setOnAction(e -> {
+            String nama = tfNama.getText();
+            String jarakText = tfJarak.getText();
+
+            if (nama.isEmpty() || jarakText.isEmpty()) {
+                tampilkanAlert(AlertType.WARNING, "Nama dan jarak wajib diisi!");
+                return;
             }
-        }
-        scanner.close();
+
+            if (listPesanan.getItems().size() >= 10) {
+                tampilkanAlert(AlertType.WARNING, "Kapasitas pesanan penuh!");
+                return;
+            }
+
+            try {
+                int jarak = Integer.parseInt(jarakText);
+
+                if (jarak <= 0) {
+                    tampilkanAlert(AlertType.WARNING, "Jarak harus lebih dari 0!");
+                    return;
+                }
+
+                Tiket tiket;
+                if (cbPelajar.isSelected()) {
+                    tiket = new TiketPelajar(nama, jarak);
+                } else {
+                    tiket = new Tiket(nama, jarak);
+                }
+
+                listPesanan.getItems().add(tiket.getInfo());
+                tampilkanAlert(AlertType.INFORMATION, "Tiket berhasil dipesan!");
+
+                tfNama.clear();
+                tfJarak.clear();
+                cbPelajar.setSelected(false);
+
+            } catch (NumberFormatException ex) {
+                tampilkanAlert(AlertType.ERROR, "Jarak harus berupa angka!");
+            }
+        });
+
+        stage.setTitle("Smart Ride");
+        stage.setScene(new Scene(root, 420, 520));
+        stage.show();
+    }
+
+    private void tampilkanAlert(AlertType tipe, String pesan) {
+        Alert alert = new Alert(tipe);
+        alert.setHeaderText(null);
+        alert.setContentText(pesan);
+        alert.showAndWait();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
